@@ -34,6 +34,16 @@ app.whenReady().then(() => {
 ipcMain.handle('get-stuff-from-main', () => 'Stuff from main!')
 ipcMain.handle('send-stuff-to-main', async (event, data) => console.log(data))
 
+//"Databas" 
+const productus = [
+  { name: 'Apples', price: 1.20 },
+  { name: 'Bananas', price: 0.80 },
+  { name: 'Cherries', price: 2.50 }
+]
+
+ipcMain.handle('get-products', () => productus)
+ipcMain.handle('get-product-info', async (event, id) => productus[id])
+
 
 app.on('window-all-closed', function () {
   app.quit()

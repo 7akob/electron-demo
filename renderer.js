@@ -13,5 +13,23 @@
     
     // Run a function sends data to main.js
     await window.exposed.sendStuffToMain('Stuff from renderer')
-    
+
+    listProducts(await window.exposed.getProducts())
 })()
+
+function listProducts(products) {
+    for (prod of products) {
+        document.getElementById('products').innerHTML += `<li id="prod-${prod.id}">${prod.name}</li>`
+    }
+}
+
+async function getProduct(id) {
+    product = await window.exposed.getProductInfo(id)
+    console.log(product)
+
+}
+
+document.getElementById('products').addEventListener(('click'), (e) => {
+    console.log(e.target.id)
+})
+
