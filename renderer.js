@@ -33,3 +33,10 @@ document.getElementById('products').addEventListener(('click'), (e) => {
     console.log(e.target.id)
 })
 
+document.getElementById("loadUsers").addEventListener("click", async () => {
+    const users = await window.exposed.getUsers();
+    users.forEach(u => {
+        console.log("Username: ", u.username);
+    })
+})
+

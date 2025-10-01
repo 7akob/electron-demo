@@ -1,8 +1,29 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, ipcMain} = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
+require('dotenv').config();
+const { Client } = require('pg');
 
-function createWindow () {
+async function fetchUsers() {
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL
+  })
+  try {
+    await client.connect();
+    const res = await client.query('SELECT username FROM users');
+    return res.rows;
+  } catch (err) {
+    console.error('DB error: ', err);
+    return [];
+  } finally {
+    await client.end();
+  }
+  
+}
+
+
+
+function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -21,6 +42,8 @@ function createWindow () {
 
 }
 
+
+
 // Called when Electron is ready to create browser windows.
 app.whenReady().then(() => {
 
@@ -33,7 +56,9 @@ app.whenReady().then(() => {
 // Example functions for communication between main and renderer (backend/frontend)
 ipcMain.handle('get-stuff-from-main', () => 'Stuff from main!')
 ipcMain.handle('send-stuff-to-main', async (event, data) => console.log(data))
-
+ipcMain.handle('get-users', async () => {
+  return await fetchUsers();
+});
 //"Databas" 
 const productus = [
   { name: 'Apples', price: 1.20 },
